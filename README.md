@@ -14,7 +14,7 @@ A C++ port of Twitter's Snowflake id generation algorithm
 ```
 
 # Use with lock
-```
+```cpp
     snowflake<std::mutex> snf;
     snf.init(1, 1);
 
