@@ -4,7 +4,6 @@
 #include <stdexcept>
 #include <mutex>
 
-
 class snowflake_nonlock
 {
 public:
@@ -16,11 +15,11 @@ public:
     }
 };
 
-template<typename TLock = snowflake_nonlock>
+template<int64_t Twepoch, typename Lock = snowflake_nonlock>
 class snowflake
 {
-    using lock_type = TLock;
-    static constexpr int64_t TWEPOCH = 1534832906275L;
+    using lock_type = Lock;
+    static constexpr int64_t TWEPOCH = Twepoch;
     static constexpr int64_t WORKER_ID_BITS = 5L;
     static constexpr int64_t DATACENTER_ID_BITS = 5L;
     static constexpr int64_t MAX_WORKER_ID = -1L ^ (-1L << WORKER_ID_BITS);
@@ -42,6 +41,8 @@ class snowflake
     int64_t sequence_ = 0;
     lock_type lock_;
 public:
+    snowflake() = default;
+
     snowflake(const snowflake&) = delete;
 
     snowflake& operator=(const snowflake&) = delete;
@@ -62,7 +63,7 @@ public:
 
     int64_t nextid()
     {
-        std::unique_lock<lock_type> lock(lock_);
+        std::lock_guard<lock_type> lock(lock_);
         //std::chrono::steady_clock  cannot decrease as physical time moves forward
         auto timestamp = millsecond();
         if (last_timestamp_ == timestamp)

@@ -3,7 +3,8 @@ A C++ port of Twitter's Snowflake id generation algorithm
 
 # Use
 ```cpp
-    snowflake<> snf;
+    using snowlake_t = snowflake<1534832906275L>;
+    snowlake_t snf;
     snf.init(1, 1);
 
     for (int64_t i = 0; i < 10000; ++i)
@@ -15,7 +16,7 @@ A C++ port of Twitter's Snowflake id generation algorithm
 
 # Use with lock
 ```cpp
-    snowflake<std::mutex> snf;
+    using snowlake_t = snowflake<1534832906275L,std::mutex>;
     snf.init(1, 1);
 
     for (int64_t i = 0; i < 10000; ++i)
